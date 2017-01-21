@@ -11,7 +11,7 @@ ehthumbs.db
 /Assets/SampleScenes*
 /Assets/StreamingAssets
 /Assets/OVR/Textures*
-
+/Assets/Standard Assets*
 
 # Folder config file
 Desktop.ini
