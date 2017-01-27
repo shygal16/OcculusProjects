@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcculusProjects.CSharp.Plugins", "OcculusProjects.CSharp.Plugins.csproj", "{71C3E044-F28B-AD66-9759-442886647242}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcculusProjects.CSharp", "OcculusProjects.CSharp.csproj", "{83AA1577-9498-3AB0-9CEB-69325964CF37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcculusProjects.CSharp.Editor", "OcculusProjects.CSharp.Editor.csproj", "{C7F57E29-E8D7-61FE-3058-E4DBC4571EC0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{71C3E044-F28B-AD66-9759-442886647242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71C3E044-F28B-AD66-9759-442886647242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71C3E044-F28B-AD66-9759-442886647242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71C3E044-F28B-AD66-9759-442886647242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83AA1577-9498-3AB0-9CEB-69325964CF37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83AA1577-9498-3AB0-9CEB-69325964CF37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83AA1577-9498-3AB0-9CEB-69325964CF37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83AA1577-9498-3AB0-9CEB-69325964CF37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7F57E29-E8D7-61FE-3058-E4DBC4571EC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7F57E29-E8D7-61FE-3058-E4DBC4571EC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7F57E29-E8D7-61FE-3058-E4DBC4571EC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7F57E29-E8D7-61FE-3058-E4DBC4571EC0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
