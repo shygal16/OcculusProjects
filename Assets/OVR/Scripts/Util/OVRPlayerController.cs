@@ -76,11 +76,13 @@ public class OVRPlayerController : MonoBehaviour
 	/// <summary>
 	/// If true, each OVRPlayerController will use the player's physical height.
 	/// </summary>
-	public bool useProfileData = true;
+	public bool useProfileData = true;//false?
 
-	protected CharacterController Controller = null;
+    public Rigidbody rb;
+
+    protected CharacterController Controller = null;
 	protected OVRCameraRig CameraRig = null;
-
+    
 	private float MoveScale = 1.0f;
 	private Vector3 MoveThrottle = Vector3.zero;
 	private float FallSpeed = 0.0f;
@@ -93,6 +95,7 @@ public class OVRPlayerController : MonoBehaviour
 	private bool prevHatLeft = false;
 	private bool prevHatRight = false;
 	private float SimulationRate = 60f;
+    public float FlyForce = 15f;
 
 	void Start()
 	{
@@ -105,7 +108,7 @@ public class OVRPlayerController : MonoBehaviour
 	void Awake()
 	{
 		Controller = gameObject.GetComponent<CharacterController>();
-
+        rb = GetComponent<Rigidbody>();
 		if(Controller == null)
 			Debug.LogWarning("OVRPlayerController: No CharacterController attached.");
 
@@ -222,115 +225,148 @@ public class OVRPlayerController : MonoBehaviour
 		if (HaltUpdateMovement)
 			return;
 
-		bool moveForward = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
-		bool moveLeft = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
-		bool moveRight = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
-		bool moveBack = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
+        Vector3 FlyDirection=Vector3.zero;
 
-		bool dpad_move = false;
+      //Checks if player's trying to fly and finds direction of flight 
+        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger))
+        {
+            Vector3 temp = CameraRig.leftHandAnchor.forward;
+            temp.Normalize();
+            FlyDirection += (temp * FlyForce);
+        }
+       //Checks if player's trying to shoot and spawns bullet
+       else if(OVRInput.Get(OVRInput.Button.Three))
+        {
 
-		if (OVRInput.Get(OVRInput.Button.DpadUp))
-		{
-			moveForward = true;
-			dpad_move   = true;
+        }
 
-		}
+        //Checks if player's trying to fly and finds direction of flight 
+        if (OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+        {
+            Vector3 temp = CameraRig.rightHandAnchor.forward;
+            temp.Normalize();
+            FlyDirection += (temp * FlyForce);
+        }
+        //Checks if player's trying to shoot and spawns bullet
+        else if (OVRInput.GetDown(OVRInput.Button.One))
+        {
 
-		if (OVRInput.Get(OVRInput.Button.DpadDown))
-		{
-			moveBack  = true;
-			dpad_move = true;
-		}
+        }
 
-		MoveScale = 1.0f;
+        rb.AddForce(FlyDirection);
+        rb.AddForce(new Vector3(0, transform.lossyScale.y * JumpForce, 0));
+        bool moveForward = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow);
+        bool moveLeft = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
+        bool moveRight = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
+        bool moveBack = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
 
-		if ( (moveForward && moveLeft) || (moveForward && moveRight) ||
-			 (moveBack && moveLeft)    || (moveBack && moveRight) )
-			MoveScale = 0.70710678f;
+        bool dpad_move = false;
 
-		// No positional movement if we are in the air
-		if (!Controller.isGrounded)
-			MoveScale = 0.0f;
+        if (OVRInput.Get(OVRInput.Button.DpadUp))
+        {
+            moveForward = true;
+            dpad_move = true;
 
-		MoveScale *= SimulationRate * Time.deltaTime;
+        }
 
-		// Compute this for key movement
-		float moveInfluence = Acceleration * 0.1f * MoveScale * MoveScaleMultiplier;
+        if (OVRInput.Get(OVRInput.Button.DpadDown))
+        {
+            moveBack = true;
+            dpad_move = true;
+        }
 
-		// Run!
-		if (dpad_move || Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-			moveInfluence *= 2.0f;
+        MoveScale = 1.0f;
 
-		Quaternion ort = transform.rotation;
-		Vector3 ortEuler = ort.eulerAngles;
-		ortEuler.z = ortEuler.x = 0f;
-		ort = Quaternion.Euler(ortEuler);
+        if ((moveForward && moveLeft) || (moveForward && moveRight) ||
+             (moveBack && moveLeft) || (moveBack && moveRight))
+            MoveScale = 0.70710678f;
 
-		if (moveForward)
-			MoveThrottle += ort * (transform.lossyScale.z * moveInfluence * Vector3.forward);
-		if (moveBack)
-			MoveThrottle += ort * (transform.lossyScale.z * moveInfluence * BackAndSideDampen * Vector3.back);
-		if (moveLeft)
-			MoveThrottle += ort * (transform.lossyScale.x * moveInfluence * BackAndSideDampen * Vector3.left);
-		if (moveRight)
-			MoveThrottle += ort * (transform.lossyScale.x * moveInfluence * BackAndSideDampen * Vector3.right);
+        // No positional movement if we are in the air
+        if (!Controller.isGrounded)
+            MoveScale = 0.0f;
 
-		Vector3 euler = transform.rotation.eulerAngles;
+        MoveScale *= SimulationRate * Time.deltaTime;
 
-		bool curHatLeft = OVRInput.Get(OVRInput.Button.PrimaryShoulder);
+        // Compute this for key movement
+        float moveInfluence = Acceleration * 0.1f * MoveScale * MoveScaleMultiplier;
 
-		if (curHatLeft && !prevHatLeft)
-			euler.y -= RotationRatchet;
+        // Run!
+        if (dpad_move || Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            moveInfluence *= 2.0f;
 
-		prevHatLeft = curHatLeft;
+        Quaternion ort = transform.rotation;
+        Vector3 ortEuler = ort.eulerAngles;
+        ortEuler.z = ortEuler.x = 0f;
+        ort = Quaternion.Euler(ortEuler);
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Jump();
+        }
+        if (moveForward)
+            MoveThrottle += ort * (transform.lossyScale.z * moveInfluence * Vector3.forward);
+        if (moveBack)
+            MoveThrottle += ort * (transform.lossyScale.z * moveInfluence * BackAndSideDampen * Vector3.back);
+        if (moveLeft)
+            MoveThrottle += ort * (transform.lossyScale.x * moveInfluence * BackAndSideDampen * Vector3.left);
+        if (moveRight)
+            MoveThrottle += ort * (transform.lossyScale.x * moveInfluence * BackAndSideDampen * Vector3.right);
 
-		bool curHatRight = OVRInput.Get(OVRInput.Button.SecondaryShoulder);
+        Vector3 euler = transform.rotation.eulerAngles;
 
-		if(curHatRight && !prevHatRight)
-			euler.y += RotationRatchet;
+        bool curHatLeft = OVRInput.Get(OVRInput.Button.PrimaryShoulder);
 
-		prevHatRight = curHatRight;
+        if (curHatLeft && !prevHatLeft)
+            euler.y -= RotationRatchet;
 
-		//Use keys to ratchet rotation
-		if (Input.GetKeyDown(KeyCode.Q))
-			euler.y -= RotationRatchet;
+        prevHatLeft = curHatLeft;
 
-		if (Input.GetKeyDown(KeyCode.E))
-			euler.y += RotationRatchet;
+        bool curHatRight = OVRInput.Get(OVRInput.Button.SecondaryShoulder);
 
-		float rotateInfluence = SimulationRate * Time.deltaTime * RotationAmount * RotationScaleMultiplier;
+        if (curHatRight && !prevHatRight)
+            euler.y += RotationRatchet;
+
+        prevHatRight = curHatRight;
+
+        //Use keys to ratchet rotation
+        if (Input.GetKeyDown(KeyCode.Q))
+            euler.y -= RotationRatchet;
+
+        if (Input.GetKeyDown(KeyCode.E))
+            euler.y += RotationRatchet;
+
+        float rotateInfluence = SimulationRate * Time.deltaTime * RotationAmount * RotationScaleMultiplier;
 
 #if !UNITY_ANDROID || UNITY_EDITOR
-		if (!SkipMouseRotation)
-			euler.y += Input.GetAxis("Mouse X") * rotateInfluence * 3.25f;
+        if (!SkipMouseRotation)
+            euler.y += Input.GetAxis("Mouse X") * rotateInfluence * 3.25f;
 #endif
 
-		moveInfluence = Acceleration * 0.1f * MoveScale * MoveScaleMultiplier;
+        moveInfluence = Acceleration * 0.1f * MoveScale * MoveScaleMultiplier;
 
 #if !UNITY_ANDROID // LeftTrigger not avail on Android game pad
-		moveInfluence *= 1.0f + OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger);
+        moveInfluence *= 1.0f + OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger);
 #endif
 
-		Vector2 primaryAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
+        Vector2 primaryAxis = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick);
 
-		if(primaryAxis.y > 0.0f)
+        if (primaryAxis.y > 0.0f)
             MoveThrottle += ort * (primaryAxis.y * transform.lossyScale.z * moveInfluence * Vector3.forward);
 
-		if(primaryAxis.y < 0.0f)
+        if (primaryAxis.y < 0.0f)
             MoveThrottle += ort * (Mathf.Abs(primaryAxis.y) * transform.lossyScale.z * moveInfluence * BackAndSideDampen * Vector3.back);
 
-		if(primaryAxis.x < 0.0f)
+        if (primaryAxis.x < 0.0f)
             MoveThrottle += ort * (Mathf.Abs(primaryAxis.x) * transform.lossyScale.x * moveInfluence * BackAndSideDampen * Vector3.left);
 
-		if(primaryAxis.x > 0.0f)
+        if (primaryAxis.x > 0.0f)
             MoveThrottle += ort * (primaryAxis.x * transform.lossyScale.x * moveInfluence * BackAndSideDampen * Vector3.right);
 
-		Vector2 secondaryAxis = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
+        Vector2 secondaryAxis = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick);
 
-		euler.y += secondaryAxis.x * rotateInfluence;
+        euler.y += secondaryAxis.x * rotateInfluence;
 
-		transform.rotation = Quaternion.Euler(euler);
-	}
+        transform.rotation = Quaternion.Euler(euler);
+    }
 
 	/// <summary>
 	/// Invoked by OVRCameraRig's UpdatedAnchors callback. Allows the Hmd rotation to update the facing direction of the player.
@@ -357,8 +393,8 @@ public class OVRPlayerController : MonoBehaviour
 	/// </summary>
 	public bool Jump()
 	{
-		if (!Controller.isGrounded)
-			return false;
+		//if (!Controller.isGrounded)
+		//	return false;
 
         MoveThrottle += new Vector3(0, transform.lossyScale.y * JumpForce, 0);
 

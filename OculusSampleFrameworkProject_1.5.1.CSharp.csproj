@@ -72,6 +72,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CheckPoints.cs" />
     <Compile Include="Assets\Goal.cs" />
     <Compile Include="Assets\OVR\Scripts\OVRBoundary.cs" />
     <Compile Include="Assets\OVR\Scripts\OVRCameraRig.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Assets\OVRInspector\Scripts\UIUtils\OVRGazeScroller.cs" />
     <Compile Include="Assets\OVRInspector\Scripts\UIUtils\OVRProgressIndicator.cs" />
     <Compile Include="Assets\P1.cs" />
+    <Compile Include="Assets\PlayerController.cs" />
     <Compile Include="Assets\Scripts\BallScript.cs" />
     <Compile Include="Assets\Scripts\ScoreUI.cs" />
     <Compile Include="Assets\Scripts\ShooterScript.cs" />
