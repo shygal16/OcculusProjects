@@ -4,28 +4,41 @@ using UnityEngine.UI;
 
 public class Bullet : MonoBehaviour
 {
-    public float Vel=5;
+    private float Vel=50;
+    public Rigidbody rb;
+    float timer = 5;
+    private PlayerController player;
+    void Awake()
+    {
+        player = GameObject.FindObjectOfType<PlayerController>();
+        rb= GetComponent<Rigidbody>();
+        rb.velocity = (transform.forward * Vel)+player.rb.velocity;
+    }
     void Update()
     {
-        transform.position=transform.forward* Vel;
+    
+        timer -= Time.deltaTime;
+        if(timer<=0)
+        {
+            Destroy(gameObject);
+        }
     }
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.tag == "Center")
         {
             HUD.Instance.AdjustScore(10);
-            Destroy(col.gameObject);
+            Destroy(gameObject);
+            
             //float accuracy = PlayerPrefs.GetFloat("Accuracy");
         }
         if (col.gameObject.tag == "Outter")
         {
             HUD.Instance.AdjustScore(2);
-            Destroy(col.gameObject);
+            Destroy(gameObject);
             //float accuracy = PlayerPrefs.GetFloat("Accuracy");
         }
-        else
-        {
-            Destroy(this);
-        }
+     
+            Destroy(gameObject);
     }
 }

@@ -6,13 +6,11 @@ public class PlayerController : MonoBehaviour {
     public float FlyForce = 15;
     public Rigidbody rb;
     public AudioClip Fire;
-    OVRHapticsClip clip;
     public GameObject bullet;
     // Use this for initialization
     void Start () {
         var p = CameraRig.transform.localPosition;
-        CameraRig.transform.localPosition = p;
-         clip = new OVRHapticsClip(Fire);
+        CameraRig.transform.localPosition = p; 
     }
 	void Awake()
     {
@@ -40,9 +38,9 @@ public class PlayerController : MonoBehaviour {
             FlyDirection += (temp * FlyForce*LeftTrigger);
         }
         //Checks if player's trying to shoot and spawns bullet
-        else if (OVRInput.Get(OVRInput.Button.Three))
+        else if (OVRInput.GetUp(OVRInput.Button.Three))
         {
-            GameObject.Instantiate(bullet, CameraRig.leftHandAnchor.position, CameraRig.leftHandAnchor.rotation);
+            GameObject.Instantiate(bullet, CameraRig.leftHandAnchor.position, CameraRig.leftHandAnchor.localRotation);
         }
         float RightTrigger = OVRInput.Get(OVRInput.RawAxis1D.RIndexTrigger);
 
@@ -53,15 +51,16 @@ public class PlayerController : MonoBehaviour {
             Vector3 temp = CameraRig.rightHandAnchor.forward;
             temp.Normalize();
             FlyDirection += (temp * FlyForce* RightTrigger);
+            OVRHaptics.Channels[1].Mix(new OVRHapticsClip(Fire));
         }
         //Checks if player's trying to shoot and spawns bullet
-        else if (OVRInput.GetDown(OVRInput.Button.One))
+        else if (OVRInput.GetUp(OVRInput.Button.One))
         {
             GameObject.Instantiate(bullet, CameraRig.rightHandAnchor.position, CameraRig.rightHandAnchor.rotation);
 
         }
 
-        OVRHaptics.RightChannel.Queue(clip);
+       
 
         rb.AddForce(FlyDirection);
     }
