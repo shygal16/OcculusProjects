@@ -74,6 +74,12 @@
   <ItemGroup>
     <Compile Include="Assets\CheckPoints.cs" />
     <Compile Include="Assets\Goal.cs" />
+    <Compile Include="Assets\Jeffery\Jeffery_Scripts\Bullet.cs" />
+    <Compile Include="Assets\Jeffery\Jeffery_Scripts\DestroyAfterTime.cs" />
+    <Compile Include="Assets\Jeffery\Jeffery_Scripts\DestroyOnCollision.cs" />
+    <Compile Include="Assets\Jeffery\Jeffery_Scripts\DestroyOnRaycast.cs" />
+    <Compile Include="Assets\Jeffery\Jeffery_Scripts\HUD.cs" />
+    <Compile Include="Assets\Jeffery\Jeffery_Scripts\Player.cs" />
     <Compile Include="Assets\OVR\Scripts\OVRBoundary.cs" />
     <Compile Include="Assets\OVR\Scripts\OVRCameraRig.cs" />
     <Compile Include="Assets\OVR\Scripts\OVRCommon.cs" />

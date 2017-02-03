@@ -22,11 +22,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-
-
-        HUD.Instance.PlayerAccuracy();
         //Score = HUD.Score;
-        Acc = HUD.Accuracy;
         counter -= Time.deltaTime;
         timeText.text = "Time: " + counter.ToString();
         if (counter <= 0)

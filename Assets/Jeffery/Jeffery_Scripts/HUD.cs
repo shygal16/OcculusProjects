@@ -42,8 +42,6 @@ public class HUD : MonoBehaviour
             Debug.LogError("Something horrible went wrong.");
         }
         HUD.Instance.AdjustScore(0);
-        HUD.Instance.PlayerShoots(0);
-        HUD.Instance.Hit(0);
         //HUD.Instance.PlayerAccuracy();
         //Reload.enabled = true;
         //Debug.Log(Reload.enabled);
@@ -54,15 +52,7 @@ public class HUD : MonoBehaviour
 
     void Update()
     {
-        if (Shoot.bullet == 0)
-        {
-            Reload.enabled = true;
-        }
-        else
-        {
-            Reload.enabled = false;
-        }
-        Debug.Log(Shoot.bullet);
+     
     }
     public void AdjustScore(int value)
     {
@@ -72,38 +62,9 @@ public class HUD : MonoBehaviour
             ScoreField.text = "Score: " + Score;
         }
         cheer.Play();
-        GameData.Instance.score = Score;
     }
 
-    public void PlayerShoots(int value)
-    {
-        ShootTimes += value;
-        if (ShootTimesField != null)
-        {
-            ShootTimesField.text = "Shoot: " + ShootTimes;
-        }
-    }
+    
 
-    public void Hit(int value)
-    {
-        HitTimes += value;
-        if (HitTimesField != null)
-        {
-            HitTimesField.text = "Hitted: " + HitTimes;
-        }
-    }
-
-    public void PlayerAccuracy()
-    {
-        if(ShootTimes != 0)
-        {
-            //print(HitTimes + " : " + ShootTimes);
-            Accuracy = ((float)HitTimes / (float)ShootTimes)*100.0f;
-            b = System.Math.Round(Accuracy, 2);
-            if (ShootAccuracyField != null)
-            {
-                ShootAccuracyField.text = "Accuracy: " + b + "%";
-            }
-        }
-    }
+   
 }

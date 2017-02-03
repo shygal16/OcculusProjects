@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
     public Rigidbody rb;
     public AudioClip Fire;
     OVRHapticsClip clip;
+    public GameObject bullet;
     // Use this for initialization
     void Start () {
         var p = CameraRig.transform.localPosition;
@@ -41,7 +42,7 @@ public class PlayerController : MonoBehaviour {
         //Checks if player's trying to shoot and spawns bullet
         else if (OVRInput.Get(OVRInput.Button.Three))
         {
-
+            GameObject.Instantiate(bullet, CameraRig.leftHandAnchor.position, CameraRig.leftHandAnchor.rotation);
         }
         float RightTrigger = OVRInput.Get(OVRInput.RawAxis1D.RIndexTrigger);
 
@@ -56,10 +57,11 @@ public class PlayerController : MonoBehaviour {
         //Checks if player's trying to shoot and spawns bullet
         else if (OVRInput.GetDown(OVRInput.Button.One))
         {
+            GameObject.Instantiate(bullet, CameraRig.rightHandAnchor.position, CameraRig.rightHandAnchor.rotation);
 
         }
-           
-            OVRHaptics.RightChannel.Queue(clip);
+
+        OVRHaptics.RightChannel.Queue(clip);
 
         rb.AddForce(FlyDirection);
     }
