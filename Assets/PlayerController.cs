@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour {
             Vector3 temp = CameraRig.rightHandAnchor.forward;
             temp.Normalize();
             FlyDirection += (temp * FlyForce* RightTrigger);
-            OVRHaptics.Channels[1].Mix(new OVRHapticsClip(Fire));
+            //OVRHaptics.Channels[1].Mix(new OVRHapticsClip(Fire));
         }
         //Checks if player's trying to shoot and spawns bullet
         else if (OVRInput.GetUp(OVRInput.Button.One))
@@ -60,6 +60,8 @@ public class PlayerController : MonoBehaviour {
 
         }
 
+            OVRInput.SetControllerVibration(0.5f, RightTrigger,OVRInput.Controller.RTouch);
+            OVRInput.SetControllerVibration(0.5f, LeftTrigger,OVRInput.Controller.LTouch);
        
 
         rb.AddForce(FlyDirection);
